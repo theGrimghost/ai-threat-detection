@@ -56,6 +56,16 @@ RULES.update({
         r"(?i)/(backup|dump|db|database)\.(sql|zip|tar|gz|bak)\b",
         r"(?i)\.(bak|old|orig|swp)(\?|\s|$)",
     ],
+    "ssti": [
+        r"\{\{.+?\}\}",
+        r"\$\{.+\}",
+        r"#\{.+?\}",
+    ],
+    "cmdi": [
+        r"[|;&`]\s*(id|whoami|cat|ls|pwd|uname)\b",
+        r"\$\(.+?\)",
+        r"`[^`]+`",
+    ],
 })
 COMPILED = {k: [re.compile(p) for p in v] for k, v in RULES.items()}
 
@@ -66,6 +76,6 @@ def _normalize(s: str) -> str:
 
 
 def detect(record: dict) -> list[str]:
-    """Return the rule categories that match a parsed log record."""
-    text = _normalize(f'{record.get("path", "")} {record.get("ua", "")}')
+    """Return the rule categories that match a parsed log record (path+body+ua)."""
+    text = _normalize(f'{record.get("path", "")} {record.get("body", "")} {record.get("ua", "")}')
     return [cat for cat, pats in COMPILED.items() if any(p.search(text) for p in pats)]

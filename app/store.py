@@ -5,7 +5,7 @@ import threading
 
 SCHEMA = """CREATE TABLE IF NOT EXISTS alerts (
     id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, ip TEXT, method TEXT, path TEXT,
-    ua TEXT, rules TEXT, score REAL, severity TEXT, source TEXT)"""
+    ua TEXT, rules TEXT, score REAL, severity TEXT, source TEXT, label INTEGER DEFAULT NULL)"""
 
 
 class Store:
@@ -17,6 +17,14 @@ class Store:
         self.db.row_factory = sqlite3.Row
         self.lock = threading.Lock()
         self.db.execute(SCHEMA)
+        try:
+            self.db.execute("ALTER TABLE alerts ADD COLUMN label INTEGER DEFAULT NULL")
+        except Exception:
+            pass
+        try:
+            self.db.execute("ALTER TABLE alerts ADD COLUMN body TEXT DEFAULT ''")
+        except Exception:
+            pass
         self.db.commit()
 
     def add(self, a: dict) -> dict:
@@ -34,6 +42,12 @@ class Store:
             rows = self.db.execute(
                 "SELECT * FROM alerts ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
         return [{**dict(r), "rules": json.loads(r["rules"])} for r in rows]
+
+    def feedback(self, alert_id: int, label: int) -> None:
+        """Active-learning hook: 1=attack, 0=benign. Powers next retrain."""
+        with self.lock:
+            self.db.execute("UPDATE alerts SET label=? WHERE id=?", (int(label), int(alert_id)))
+            self.db.commit()
 
     def stats(self) -> dict:
         with self.lock:

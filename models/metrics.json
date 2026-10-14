@@ -1,38 +1,81 @@
 {
   "rules": {
     "precision": 1.0,
-    "recall": 0.796,
-    "f1": 0.8864
+    "recall": 0.6506,
+    "f1": 0.7883
   },
   "random_forest": {
-    "precision": 1.0,
+    "precision": 0.9964,
     "recall": 1.0,
-    "f1": 1.0
+    "f1": 0.9982
   },
   "isolation_forest": {
-    "precision": 0.8946,
-    "recall": 0.7013,
-    "f1": 0.7862
+    "precision": 0.9032,
+    "recall": 0.7278,
+    "f1": 0.806
   },
   "ensemble": {
-    "precision": 0.9987,
-    "recall": 1.0,
-    "f1": 0.9993
+    "precision": 0.9973,
+    "recall": 0.9973,
+    "f1": 0.9973
   },
-  "ensemble_false_positive_rate": 0.0013,
+  "ensemble_false_positive_rate": 0.004,
   "recall_by_category": {
     "classic": {
       "rules": 1.0,
       "ensemble": 1.0
     },
     "evasive": {
-      "rules": 0.5629,
+      "rules": 0.6783,
+      "ensemble": 0.9957
+    },
+    "novel": {
+      "rules": 0.7698,
       "ensemble": 1.0
     },
+    "real-attack": {
+      "rules": 0.3108,
+      "ensemble": 0.9946
+    },
     "recon": {
-      "rules": 0.8272,
+      "rules": 0.8015,
       "ensemble": 1.0
     }
   },
-  "unseen_evasive_recall_rf": 0.6608
+  "unseen_evasive_recall_rf": 0.9522,
+  "lofo_recall_rf": {
+    "classic": 0.9625,
+    "evasive": 0.9522,
+    "novel": 0.9206,
+    "real-attack": 0.7297,
+    "recon": 0.5809
+  },
+  "lofo_layered_recall": {
+    "classic": 1.0,
+    "evasive": 1.0,
+    "novel": 1.0,
+    "real-attack": 0.7405,
+    "recon": 0.9044
+  },
+  "cv_f1_mean": 0.9971,
+  "cv_f1_std": 0.001,
+  "cv_f1_folds": [
+    0.996,
+    0.9966,
+    0.9966,
+    0.9972,
+    0.9989
+  ],
+  "weight_search": {
+    "w": 0.7,
+    "f1": 0.9973,
+    "fp": 0.004
+  },
+  "per_family_rf_threshold_95": {
+    "classic": 0.9546,
+    "evasive": 0.9122,
+    "novel": 0.9552,
+    "real-attack": 0.8618,
+    "recon": 0.9268
+  }
 }
